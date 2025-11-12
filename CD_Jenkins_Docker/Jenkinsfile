@@ -1,8 +1,11 @@
 pipeline {
-    agent any
-
+    agent {
+        docker {
+            image 'node:18'
+            args '-u root -v /var/run/docker.sock:/var/run/docker.sock'
+        }
+    }
     stages {
-
         stage('Build') {
             steps {
                 dir('CD_Jenkins_Docker') {
@@ -10,7 +13,6 @@ pipeline {
                 }
             }
         }
-
         stage('Test') {
             steps {
                 dir('CD_Jenkins_Docker') {
@@ -18,7 +20,6 @@ pipeline {
                 }
             }
         }
-
         stage('Build Docker Image') {
             steps {
                 dir('CD_Jenkins_Docker') {
@@ -26,40 +27,13 @@ pipeline {
                 }
             }
         }
-
         stage('Run Docker Container') {
             steps {
                 echo "Running Docker container..."
                 sh '''
-                # Check if any container is using port 3000 and stop it
-                echo "🔍 Checking for containers using port 3000..."
-                CONTAINER_ID=$(docker ps -q --filter "publish=3000")
-                if [ -n "$CONTAINER_ID" ]; then
-                    echo "⚠️ Port 3000 is in use. Stopping container $CONTAINER_ID..."
-                    docker stop $CONTAINER_ID
-                    docker rm $CONTAINER_ID
-                fi
-
-                # Double-check for dangling containers using the same image
-                OLD_CONTAINERS=$(docker ps -a -q --filter "ancestor=jenkins-docker-app")
-                if [ -n "$OLD_CONTAINERS" ]; then
-                    echo "🧹 Removing old containers..."
-                    docker rm -f $OLD_CONTAINERS
-                fi
-
-                # Optional: Remove old image to ensure fresh rebuild
-                IMAGE_ID=$(docker images -q jenkins-docker-app)
-                if [ -n "$IMAGE_ID" ]; then
-                    echo "🧽 Removing old image $IMAGE_ID..."
-                    docker rmi -f $IMAGE_ID
-                fi
-
-                # Run the new container
-                echo " Starting a fresh container on port 3000..."
+                docker ps --filter "publish=3000" -q | xargs -r docker stop
+                docker ps -a --filter "publish=3000" -q | xargs -r docker rm
                 docker run -d -p 3000:3000 --name jenkins_docker_app jenkins-docker-app
-
-                # Confirm deployment
-                echo "✅ Deployment successful! Visit http://localhost:3000 to view the app."
                 '''
             }
         }
