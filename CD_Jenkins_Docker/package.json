@@ -1,0 +1,12 @@
+{
+  "name": "jenkins-docker-app",
+  "version": "1.0.0",
+  "description": "Sample Node.js app for Jenkins + Docker CI/CD pipeline",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "test": "echo \"Tests passed!\""
+  },
+  "author": "Harsha Dhaarani",
+  "license": "MIT"
+}
