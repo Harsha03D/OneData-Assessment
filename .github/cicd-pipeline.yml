@@ -1,0 +1,35 @@
+name: OneData CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build-and-deploy:
+    runs-on: self-hosted
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: |
+          echo "Building Docker image..."
+          docker build -t onedata-app:latest ./CD_Jenkins_Docker
+
+      - name: Load Docker image into Minikube
+        run: |
+          echo "Loading image into Minikube..."
+          minikube image load onedata-app:latest
+
+      - name: Apply Kubernetes manifests
+        run: |
+          echo "Deploying to Kubernetes..."
+          kubectl apply -f ./CD_Jenkins_Docker/k8s/deployment.yaml
+          kubectl apply -f ./CD_Jenkins_Docker/k8s/service.yaml
+          kubectl apply -f ./CD_Jenkins_Docker/k8s/ingress.yaml
+
+      - name: Verify deployment
+        run: |
+          echo "Checking pods and services..."
+          kubectl get pods
+          kubectl get svc
