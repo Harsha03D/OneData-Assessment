@@ -11,6 +11,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Print build metadata
+        run: |
+          echo "---------------------------------------------------"
+          echo "🕒 Build Timestamp: $(date)"
+          echo "👩‍💻 Triggered by: $GITHUB_ACTOR"
+          echo "🔁 Commit ID: $GITHUB_SHA"
+          echo "📦 Repository: $GITHUB_REPOSITORY"
+          echo "---------------------------------------------------"
+
       - name: Build Docker image
         run: |
           echo "Building Docker image..."
@@ -33,3 +42,9 @@ jobs:
           echo "Checking pods and services..."
           kubectl get pods
           kubectl get svc
+
+      - name: Print completion summary
+        run: |
+          echo "✅ Deployment completed successfully!"
+          echo "🕒 Completed at: $(date)"
+          echo "---------------------------------------------------"
