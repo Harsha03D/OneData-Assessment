@@ -6,8 +6,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git 'https://github.com/Harsha03D/OneData-Assessment.git'
-            }
+                git branch: 'main', url: 'https://github.com/Harsha03D/OneData-Assessment.git'            }
         }
         stage('Build') {
             steps {
