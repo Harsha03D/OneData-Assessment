@@ -48,3 +48,12 @@ jobs:
           echo "✅ Deployment completed successfully!"
           echo "🕒 Completed at: $(date)"
           echo "---------------------------------------------------"
+
+      - name: Notify Build Status
+        if: always()
+        run: |
+          if [ "${{ job.status }}" == "success" ]; then
+            echo "🎉 Build completed successfully! Check your deployment at http://onedata.local"
+          else
+            echo "⚠️ Build failed! Please check logs in GitHub Actions."
+          fi
