@@ -1,11 +1,7 @@
 pipeline {
     agent any
+
     stages {
-        stage('Checkout') {
-            steps {
-                git branch: 'main', url: 'https://github.com/Harsha03D/OneData-Assessment.git'
-            }
-        }
 
         stage('Build') {
             steps {
@@ -33,6 +29,8 @@ pipeline {
 
         stage('Run Docker Container') {
             steps {
+                sh 'docker ps -q --filter "ancestor=jenkins-docker-app" | xargs -r docker stop'
+                sh 'docker ps -a -q --filter "ancestor=jenkins-docker-app" | xargs -r docker rm'
                 sh 'docker run -d -p 3000:3000 jenkins-docker-app'
             }
         }
