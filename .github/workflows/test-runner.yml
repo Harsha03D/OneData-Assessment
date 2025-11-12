@@ -1,0 +1,17 @@
+name: Test Runner Connection
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: self-hosted
+    steps:
+      - name: Verify Environment
+        run: |
+          echo "✅ Runner is working fine!"
+          echo "Running on $env:COMPUTERNAME"
+          docker --version
+          kubectl version --client
+          minikube status
