@@ -3,28 +3,28 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                dir('Task1_CICD_Jenkins_Docker') {
+                dir('CD_Jenkins_Docker') {
                     git branch: 'main', url: 'https://github.com/Harsha03D/OneData-Assessment.git'
                 }
             }
         }
         stage('Build') {
             steps {
-                dir('Task1_CICD_Jenkins_Docker') {
+                dir('CD_Jenkins_Docker') {
                     sh 'npm install'
                 }
             }
         }
         stage('Test') {
             steps {
-                dir('Task1_CICD_Jenkins_Docker') {
+                dir('CD_Jenkins_Docker') {
                     sh 'npm test || echo "No tests found"'
                 }
             }
         }
         stage('Build Docker Image') {
             steps {
-                dir('Task1_CICD_Jenkins_Docker') {
+                dir('CD_Jenkins_Docker') {
                     sh 'docker build -t jenkins-docker-app .'
                 }
             }
