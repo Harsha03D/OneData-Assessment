@@ -1,5 +1,4 @@
 pipeline {
-
     agent any
 
     stages {
@@ -32,14 +31,23 @@ pipeline {
             steps {
                 echo "Running Docker container..."
                 sh '''
-                # Stop and remove any container using port 3000
-                docker ps --filter "publish=3000" -q | xargs -r docker stop
-                docker ps -a --filter "publish=3000" -q | xargs -r docker rm
-                
-                # Remove old image if exists (optional clean-up)
-                docker images -q jenkins-docker-app | xargs -r docker rmi -f
-                
+                # Stop any container using port 3000
+                CONTAINER_ID=$(docker ps --filter "publish=3000" -q)
+                if [ -n "$CONTAINER_ID" ]; then
+                    echo "Stopping old container using port 3000..."
+                    docker stop $CONTAINER_ID
+                    docker rm $CONTAINER_ID
+                fi
+
+                # Remove old image if exists
+                IMAGE_ID=$(docker images -q jenkins-docker-app)
+                if [ -n "$IMAGE_ID" ]; then
+                    echo "Removing old image..."
+                    docker rmi -f $IMAGE_ID
+                fi
+
                 # Run new container
+                echo "Starting new container on port 3000..."
                 docker run -d -p 3000:3000 jenkins-docker-app
                 '''
             }
