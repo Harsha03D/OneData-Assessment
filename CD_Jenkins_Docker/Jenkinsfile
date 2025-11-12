@@ -1,10 +1,10 @@
 pipeline {
-    agent any
+    agent { docker { image 'node:18' } }
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/Harsha03D/OneData-Assessment.git'            
-                }
+                git branch: 'main', url: 'https://github.com/Harsha03D/OneData-Assessment.git'
+            }
         }
         stage('Build') {
             steps {
