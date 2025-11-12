@@ -1,22 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: one-data-app-deployment
+  name: onedata-app-deployment
   labels:
-    app: one-data-app
+    app: onedata-app
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: one-data-app
+      app: onedata-app
   template:
     metadata:
       labels:
-        app: one-data-app
+        app: onedata-app
     spec:
       containers:
-        - name: one-data-app
-          image: jenkins-docker-app:latest
-          imagePullPolicy: IfNotPresent
+        - name: onedata-app
+          image: harshadhaarani/onedata-app:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 3000
